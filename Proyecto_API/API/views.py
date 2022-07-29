@@ -19,6 +19,7 @@ class CompanyView(View):
         # Esto es para una sola compañía que se quiera realizar obtener con
         # GET y el id, así: api/companies/5
         if id > 0:  
+            # El filter no saca error si el id no existe.
             companies=list(Company.objects.filter(id=id).values())
             if len(companies) > 0:
                 company=companies[0]
@@ -52,8 +53,19 @@ class CompanyView(View):
 
 # Método para actualizar un registro
     def put(self, request, id):
-        
         jd=json.loads(request.body) 
+        companies = list(Company.objects.filter(id=id).values())
+        # Realice un filter y si encuentra algo, o sea len() > 0, sí hay algo
+        if len(companies) > 0:
+            company = Company.objects.get(id=id)
+            company.name = jd['name']
+            company.website = jd['website']
+            company.foundation = jd['foundation']
+            company.save()
+            datos = {'message': "Success Update"}
+        else:
+            datos = {'message': "Company not found..."}
+        return JsonResponse(datos)
 
     def delete(self, request):
         pass
