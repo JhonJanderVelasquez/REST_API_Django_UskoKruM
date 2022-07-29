@@ -2,10 +2,17 @@ from django.http import JsonResponse
 from django.views import View
 from .models import Company
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
 # Es una vista basada en una clase que hereda de vista y 
 # en url se tiene que convertir
 # en una view con class.as_view() 
 class CompanyView(View):
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
         companies= list(Company.objects.values())
@@ -18,8 +25,12 @@ class CompanyView(View):
         return JsonResponse(datos)
 
     def post(self, request):
-        pass
+        datos = {'message': "Success"}
+        return JsonResponse(datos)
+
+
     def put(self, request):
         pass
+
     def delete(self, request):
         pass
