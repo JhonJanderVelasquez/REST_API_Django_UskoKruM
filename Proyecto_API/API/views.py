@@ -15,15 +15,28 @@ class CompanyView(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request):
-        companies= list(Company.objects.values())
-        if len(companies)>0:
-            # Creación de un diccionario python si tiene datos la base de datos
-            datos={'message':"Success", 'Companies':companies}
+    def get(self, request, id):
+        # Esto es para una sola compañía que se quiera realizar obtener con
+        # GET y el id, así: api/companies/5
+        if id:
+            companies=list(Company.objects.filter(id=id).values())
+            if len(companies) > 0:
+                company=companies[0]
+                datos={'message':"Success", 'Companies':company}
+            else:
+                datos={'message':"Companies not found.."} 
+            return JsonResponse(datos)
+
+        # Este ese el GET si no se quiere una compañía sino todas...
         else:
-            # Si no hay datos... Pues que muestre este mensaje...
-            datos={'message':"Companies not found.."}
-        return JsonResponse(datos)
+            companies= list(Company.objects.values())
+            if len(companies)>0:
+                # Creación de un diccionario python si tiene datos la base de datos
+                datos={'message':"Success", 'Companies':companies}
+            else:
+                # Si no hay datos... Pues que muestre este mensaje...
+                datos={'message':"Companies not found.."}
+            return JsonResponse(datos)
 
     def post(self, request):
         # print(request.body)
