@@ -4,6 +4,7 @@ from .models import Company
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+import json
 
 # Es una vista basada en una clase que hereda de vista y 
 # en url se tiene que convertir
@@ -25,6 +26,14 @@ class CompanyView(View):
         return JsonResponse(datos)
 
     def post(self, request):
+        # print(request.body)
+        jd=json.loads(request.body)
+        # print(jd)
+        Company.objects.create(
+            name=jd['name'], 
+            website=jd['website'], 
+            foundation=jd['foundation']
+        )
         datos = {'message': "Success"}
         return JsonResponse(datos)
 
