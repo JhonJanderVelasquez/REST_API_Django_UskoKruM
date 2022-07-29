@@ -15,10 +15,10 @@ class CompanyView(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, id):
+    def get(self, request, id=0):
         # Esto es para una sola compañía que se quiera realizar obtener con
         # GET y el id, así: api/companies/5
-        if id:
+        if id > 0:  
             companies=list(Company.objects.filter(id=id).values())
             if len(companies) > 0:
                 company=companies[0]
@@ -50,9 +50,10 @@ class CompanyView(View):
         datos = {'message': "Success"}
         return JsonResponse(datos)
 
-
-    def put(self, request):
-        pass
+# Método para actualizar un registro
+    def put(self, request, id):
+        
+        jd=json.loads(request.body) 
 
     def delete(self, request):
         pass
